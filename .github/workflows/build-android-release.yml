@@ -1,0 +1,102 @@
+name: Build Android release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Android build tools
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Install Bubblewrap
+        run: npm install --global @bubblewrap/cli
+
+      - name: Generate release signing key
+        run: |
+          mkdir -p release-signing
+          SIGNING_PASSWORD="$(openssl rand -hex 24)"
+          printf '%s' "$SIGNING_PASSWORD" > release-signing/password.txt
+          keytool -genkeypair -v \
+            -keystore release-signing/thanik-ai-upload.jks \
+            -storepass "$SIGNING_PASSWORD" \
+            -keypass "$SIGNING_PASSWORD" \
+            -alias thanik-ai \
+            -keyalg RSA -keysize 4096 -validity 10000 \
+            -dname "CN=Thanik AI Academy, OU=Mobile, O=S-Sai-Ganesh, C=IN"
+
+      - name: Configure Bubblewrap
+        run: bubblewrap updateConfig --jdkPath "$JAVA_HOME" --androidSdkPath "$ANDROID_HOME"
+
+      - name: Generate Android project
+        run: bubblewrap update --skipVersionUpgrade --manifest twa/twa-manifest.json --directory twa
+
+      - name: Build signed APK and App Bundle
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.BUBBLEWRAP_KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.BUBBLEWRAP_KEY_PASSWORD }}
+        run: |
+          SIGNING_PASSWORD="$(cat release-signing/password.txt)"
+          BUBBLEWRAP_KEYSTORE_PASSWORD="$SIGNING_PASSWORD" \
+          BUBBLEWRAP_KEY_PASSWORD="$SIGNING_PASSWORD" \
+          bubblewrap build --skipPwaValidation --manifest twa/twa-manifest.json --directory twa
+
+      - name: Create Android asset links
+        run: |
+          SIGNING_PASSWORD="$(cat release-signing/password.txt)"
+          FINGERPRINT="$(keytool -list -v -keystore release-signing/thanik-ai-upload.jks -alias thanik-ai -storepass "$SIGNING_PASSWORD" | awk -F': ' '/SHA256:/{print $2; exit}')"
+          mkdir -p .well-known
+          cat > .well-known/assetlinks.json <<EOF
+          [{
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {
+              "namespace": "android_app",
+              "package_name": "com.ssaiganesh.thanikaiacademy",
+              "sha256_cert_fingerprints": ["$FINGERPRINT"]
+            }
+          }]
+          EOF
+
+      - name: Publish Android asset links
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .well-known/assetlinks.json
+          git commit -m "Add Android asset links" || exit 0
+          git push
+
+      - name: Upload Play Store release files
+        uses: actions/upload-artifact@v4
+        with:
+          name: thanik-ai-play-store-release
+          path: |
+            twa/app-release-signed.apk
+            twa/app-release-bundle.aab
+
+      - name: Upload signing-key backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: thanik-ai-signing-key-backup
+          path: |
+            release-signing/thanik-ai-upload.jks
+            release-signing/password.txt
+          retention-days: 90

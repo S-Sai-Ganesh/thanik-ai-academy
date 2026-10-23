@@ -1,0 +1,24 @@
+{
+  "packageId": "com.ssaiganesh.thanikaiacademy",
+  "host": "s-sai-ganesh.github.io",
+  "name": "Thanik AI Academy",
+  "launcherName": "Thanik AI",
+  "display": "standalone",
+  "themeColor": "#101c46",
+  "themeColorDark": "#101c46",
+  "navigationColor": "#101c46",
+  "navigationColorDark": "#101c46",
+  "backgroundColor": "#f0f4ff",
+  "enableNotifications": true,
+  "startUrl": "/thanik-ai-academy/",
+  "webManifestUrl": "https://s-sai-ganesh.github.io/thanik-ai-academy/manifest.json",
+  "iconUrl": "https://s-sai-ganesh.github.io/thanik-ai-academy/icon-512.svg",
+  "maskableIconUrl": "https://s-sai-ganesh.github.io/thanik-ai-academy/icon-512.svg",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "release-signing/thanik-ai-upload.jks",
+    "alias": "thanik-ai"
+  }
+}
