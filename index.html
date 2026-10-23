@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="te">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101c46">
+  <meta name="description" content="Create YouTube scripts and production prompts in Telugu or English.">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon-192.svg" type="image/svg+xml">
+  <title>Thanik AI Academy</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17213d;
+      --navy: #101c46;
+      --violet: #4338ca;
+      --page: #f0f4ff;
+      --muted: #667085;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--navy), #4c43d9);
+      color: #fff;
+      padding: 28px 18px 24px;
+      border-radius: 0 0 24px 24px;
+    }
+
+    header>div {
+      max-width: 720px;
+      margin: auto;
+    }
+
+    h1 {
+      margin: 0 0 7px;
+      font-size: clamp(1.55rem, 5vw, 2rem);
+    }
+
+    header p {
+      margin: 8px 0 0;
+      opacity: .92;
+    }
+
+    main {
+      max-width: 720px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px;
+      margin: 14px 0;
+      box-shadow: 0 4px 15px #17213d12;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      margin: 0 0 8px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin: 14px 0 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccd4e7;
+      border-radius: 10px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 105px;
+      resize: vertical;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: .65;
+    }
+
+    .primary {
+      width: 100%;
+      background: var(--violet);
+      color: #fff;
+      margin-top: 16px;
+    }
+
+    .secondary {
+      background: #e7eaff;
+      color: #282477;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    #result {
+      min-height: 110px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.7;
+    }
+
+    #status {
+      min-height: 1.4em;
+      color: #4c43d9;
+      font-weight: 700;
+    }
+
+    .hint,
+    small {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .notice {
+      border-left: 4px solid #f4b740;
+      padding-left: 12px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>
+      <h1>✨ Thanik AI Academy</h1>
+      <div>YouTube Script &amp; Voice Creator</div>
+      <p>మీ వీడియో ఆలోచనను స్క్రిప్ట్‌గా మార్చుకోండి.</p>
+    </div>
+  </header>
+  <main>
+    <section class="card" id="installCard" hidden>
+      <h2>యాప్‌గా ఇన్‌స్టాల్ చేయండి</h2>
+      <p class="hint">ఈ టూల్‌ను మీ ఫోన్ హోమ్ స్క్రీన్‌కు జోడించండి.</p>
+      <button class="secondary" id="install">Install app</button>
+    </section>
+    <section class="card">
+      <h2>🎬 వీడియో వివరాలు</h2>
+      <label for="topic">వీడియో టాపిక్</label>
+      <textarea id="topic" placeholder="ఉదా: AI ఉపయోగించి ఉచితంగా వీడియోలు తయారు చేయడం"></textarea>
+      <label for="lang">వీడియో భాష</label>
+      <select id="lang">
+        <option value="Telugu">తెలుగు</option>
+        <option value="English">English</option>
+        <option value="Telugu mixed with simple English">తెలుగు + English</option>
+      </select>
+      <label for="type">వీడియో రకం</label>
+      <select id="type">
+        <option>YouTube విద్యా వీడియో</option>
+        <option>మహిళా AI టీచర్</option>
+        <option>సినిమాటిక్ ప్రకటన</option>
+        <option>బిజినెస్ ప్రమోషన్</option>
+        <option>కామెడీ వీడియో</option>
+        <option>Motivational video</option>
+        <option>YouTube Shorts</option>
+      </select>
+      <label for="duration">వీడియో నిడివి</label>
+      <select id="duration">
+        <option value="30 seconds">30 సెకన్లు</option>
+        <option value="1 minute">1 నిమిషం</option>
+        <option value="5 minutes" selected>5 నిమిషాలు</option>
+        <option value="10 minutes">10 నిమిషాలు</option>
+      </select>
+      <label for="apiKey">Gemini API Key (ఐచ్ఛికం)</label>
+      <input id="apiKey" type="password" placeholder="AI Studio API Key నమోదు చేయండి" autocomplete="off">
+      <small>Key ఈ పేజీలో నిల్వ చేయబడదు. ఇది వ్యక్తిగత పరీక్ష కోసం మాత్రమే; పబ్లిక్ యాప్‌కు సురక్షితమైన backend
+        అవసరం.</small>
+      <button class="primary" id="generate">✨ స్క్రిప్ట్ తయారు చేయండి</button>
+      <p id="status" role="status" aria-live="polite"></p>
+    </section>
+    <section class="card">
+      <h2>📝 మీ వీడియో స్క్రిప్ట్</h2>
+      <div id="result">మీ టాపిక్ నమోదు చేసి Generate బటన్ నొక్కండి.</div>
+      <div class="row"><button class="secondary" id="speak">🔊 వాయిస్ వినండి</button><button class="secondary"
+          id="stop">⏹ ఆపండి</button><button class="secondary" id="copy">📋 కాపీ</button><button class="secondary"
+          id="download">⬇ TXT డౌన్‌లోడ్</button></div>
+    </section>
+    <section class="card notice">
+      <h2>గమనిక</h2>
+      <p class="hint">ఈ వెర్షన్ స్క్రిప్ట్, వాయిస్ ప్లేబ్యాక్, మరియు production prompts మాత్రమే తయారు చేస్తుంది. ఇది MP4
+        వీడియో లేదా voice-audio ఫైల్‌ను సృష్టించదు.</p>
+    </section>
+  </main>
+  <script>
+    const $ = id => document.getElementById(id);
+    let currentText = '', installPrompt;
+    const setStatus = message => $('status').textContent = message;
+    function makePrompt() { return `Create a complete YouTube video script.\nTopic: ${$('topic').value.trim()}\nLanguage: ${$('lang').value}\nVideo style: ${$('type').value}\nDuration: ${$('duration').value}\n\nWrite in clear, natural spoken language. Include: 1. Catchy opening hook 2. Introduction 3. Detailed narration in logical scenes 4. Visual suggestions for each scene 5. Voice-over dialogue 6. On-screen text suggestions 7. Strong ending and call to action 8. YouTube title, description and hashtags 9. Thumbnail image generation prompt 10. Video generation prompt. Make the script suitable for the selected duration. Return plain text with clear headings.`; }
+    function demoScript() { const topic = $('topic').value.trim(); return `వీడియో టాపిక్: ${topic}\n\nప్రారంభం:\nనమస్కారం మిత్రులారా! ఈ రోజు మనం ${topic} గురించి సులభంగా తెలుసుకుందాం.\n\nవివరణ:\nముందుగా ఈ అంశం యొక్క ప్రాథమిక విషయాలను అర్థం చేసుకుందాం. సరైన ప్లాన్ తయారు చేసుకొని, అవసరమైన టూల్స్‌ను ఎంచుకుని ఒక్కో దశను అమలు చేయండి. చివరగా ఫలితాన్ని పరిశీలించి అవసరమైన మార్పులు చేయండి.\n\nముగింపు:\nఈ వీడియో ఉపయోగపడితే లైక్ చేయండి, కామెంట్ చేయండి, మరిన్ని వీడియోల కోసం Thanik AI Academy ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి.\n\nగమనిక: ఇది నమూనా స్క్రిప్ట్ మాత్రమే. పూర్తి AI స్క్రిప్ట్ కోసం API Key ఉపయోగించండి.`; }
+    async function generate() {
+      const topic = $('topic').value.trim();
+      if (!topic) return setStatus('ముందుగా వీడియో టాపిక్ నమోదు చేయండి.');
+      $('generate').disabled = true; setStatus('స్క్రిప్ట్ తయారవుతోంది...');
+      try {
+        const key = $('apiKey').value.trim();
+        if (!key) { currentText = demoScript(); $('result').textContent = currentText; setStatus('నమూనా స్క్రిప్ట్ తయారైంది. పూర్తి AI కోసం API Key అవసరం.'); return; }
+        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify({ contents: [{ parts: [{ text: makePrompt() }] }] }) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error?.message || 'API error');
+        currentText = (data.candidates?.[0]?.content?.parts || []).map(part => part.text || '').join('\n');
+        if (!currentText) throw new Error('సమాధానం రాలేదు');
+        $('result').textContent = currentText; setStatus('స్క్రిప్ట్ సిద్ధమైంది!');
+      } catch (error) { setStatus(`లోపం: ${error.message}`); }
+      finally { $('generate').disabled = false; }
+    }
+    $('generate').addEventListener('click', generate);
+    $('speak').addEventListener('click', () => { if (!currentText) return setStatus('ముందుగా స్క్రిప్ట్ తయారు చేయండి.'); if (!('speechSynthesis' in window)) return setStatus('ఈ బ్రౌజర్‌లో వాయిస్ సదుపాయం లేదు.'); speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(currentText); utterance.lang = $('lang').value === 'English' ? 'en-IN' : 'te-IN'; utterance.rate = .92; const voice = speechSynthesis.getVoices().find(item => item.lang.toLowerCase().startsWith(utterance.lang.slice(0, 2))); if (voice) utterance.voice = voice; speechSynthesis.speak(utterance); });
+    $('stop').addEventListener('click', () => speechSynthesis.cancel());
+    $('copy').addEventListener('click', async () => { if (!currentText) return setStatus('ముందుగా స్క్రిప్ట్ తయారు చేయండి.'); try { await navigator.clipboard.writeText(currentText); setStatus('స్క్రిప్ట్ కాపీ అయింది.'); } catch { setStatus('కాపీ కాలేదు. టెక్స్ట్‌ను సెలెక్ట్ చేసి కాపీ చేయండి.'); } });
+    $('download').addEventListener('click', () => { if (!currentText) return setStatus('ముందుగా స్క్రిప్ట్ తయారు చేయండి.'); const url = URL.createObjectURL(new Blob([currentText], { type: 'text/plain;charset=utf-8' })); const link = document.createElement('a'); link.href = url; link.download = 'thanik-ai-script.txt'; link.click(); URL.revokeObjectURL(url); });
+    window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; $('installCard').hidden = false; });
+    $('install').addEventListener('click', async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = undefined; $('installCard').hidden = true; });
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(() => { });
+  </script>
+</body>
+
+</html>
