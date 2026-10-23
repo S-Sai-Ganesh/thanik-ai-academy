@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.ssaiganesh.thanikaiacademy",
+    "sha256_cert_fingerprints": ["1E:5F:E3:4A:E3:80:C8:A3:7B:F2:C4:23:9B:7C:6D:64:76:F8:5C:AB:FF:03:E2:9C:E2:9F:D6:1B:3C:2D:DA:DE"]
+  }
+}]
