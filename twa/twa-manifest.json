@@ -16,6 +16,7 @@
   "maskableIconUrl": "https://s-sai-ganesh.github.io/thanik-ai-academy/icon-512.svg",
   "appVersion": "1.0.0",
   "appVersionCode": 1,
+  "minSdkVersion": 24,
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "../release-signing/thanik-ai-upload.jks",
